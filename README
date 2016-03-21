@@ -1,0 +1,43 @@
+#setup warehouse-adapter code to listen for events from OBC
+
+############## SETUP ###########
+1. set WAREHOUSEDIR in setup.sh 
+
+2. . ./setup.sh
+
+############### BUILD ###################
+#build warehouse-adapter that receives events from OBC
+1. build protoc-gen-go
+   mkdir $WAREHOUSEDIR/bin
+   cd $WAREHOUSEDIR/src/github.com/golang/protobuf/protoc-gen-go
+   go build -o $WAREHOUSEDIR/bin/protoc-gen-go
+
+2. cd $WAREHOUSEDIR
+
+3. install MySQL and create blocks database and block/transaction tables
+
+4. go build
+
+#build the warehouse client that gets transaction
+#notifications from above warehouse adapter
+5. cd warehouse-client
+
+6. go build
+
+############### RUN ###################
+#run the peer (say in vagrant)
+7. obc-peer peer
+
+#run the adapter 
+8. cd $WAREHOUSE
+   ./warehouse
+
+#run the warehouse-client
+9. cd warehouse-client
+    ./warehouse-client
+
+#send transaction
+10. ./obc-peer chaincode invoke -n bb540edfc1ee2ac0f5e2ec6000677f4cd1c6728046d5e32dede7fea11a42f86a6943b76a8f9154f4792032551ed320871ff7b7076047e4184292e01e3421889c -l golang -c '{"Function":"invoke", "Args": ["a", "b", "10"]}'
+
+#look up DB
+11. just browse using the workbench

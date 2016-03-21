@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package protos;
+
+// Interface exported by the server.
+service EventNotify {
+  // Accepts a client and sends notifications
+  rpc Notifications(stream Client) returns (stream Notification) {}
+}
+
+// registring client
+message Client {
+  string name = 1;
+}
+
+// notification messages to client
+message Notification {
+  // The message to be sent.
+  string tid = 1;
+  string blockid = 2;
+}
